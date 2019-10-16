@@ -23,11 +23,13 @@ void drawHead(Head* head, uint32_t x_mod, uint8_t colour) {
 
 
 void drawLines(WINDOW* win, ProgramState* state) {
+    clear();
+
     for ( uint32_t y = 0; y < state->buffer_ptr->no_lines; y++ ) {
         mvprintw(
             y, 0,
-            "[%x](%x):\t\"",
-            y, state->buffer_ptr->lines_len[y]
+            "(%x):\t\"",
+            state->buffer_ptr->lines_len[y]
         );
 
         // getting current cursor position for head drawing mod
@@ -42,8 +44,12 @@ void drawLines(WINDOW* win, ProgramState* state) {
         }
         printw("\"");
 
-        drawHead(state->w_head_ptr, cur_x, RED);
-        drawHead(state->r_head_ptr, cur_x, BLUE);
+        if ( state->w_head_ptr->pos_y == y ) {
+            drawHead(state->w_head_ptr, cur_x, RED);
+        }
+        if ( state->r_head_ptr->pos_y == y ) {
+            drawHead(state->r_head_ptr, cur_x, BLUE);
+        }
     }
 
 
@@ -87,22 +93,37 @@ int run(WINDOW* win, char* filename) {
 }
 
 
-int main() {
+int main(int argc, char** argv) {
     WINDOW* win = initscr();
+
     start_color();
+    if ( has_colors() != FALSE ) {
+        init_pair(BLUE, COLOR_BLUE, COLOR_BLACK);
+        init_pair(RED, COLOR_RED, COLOR_BLACK);
+    }
 
     noecho();
 
     curs_set(FALSE);
 
 
-    if ( has_colors() != FALSE ) {
-        init_pair(BLUE, COLOR_BLUE, COLOR_BLACK);
-        init_pair(RED, COLOR_RED, COLOR_BLACK);
+    Flags o = {0, 0, 0, ""};
+
+    if ( argc < 2 ) {
+        endwin();
+        fprintf(stderr, "No input files\n");
+        return 0;
     }
 
-
-    run(win, "./test.scaf");
+    for ( int x = 1; x < argc; x++ ) {
+        if ( verifyPath(argv[x], &o) ) {
+            run(win, argv[x]);
+        } else {
+            endwin();
+            fprintf(stderr, "Can't open path \"%s\"\n", argv[x]);
+            return 0;
+        }
+    }
 
     endwin();
 
