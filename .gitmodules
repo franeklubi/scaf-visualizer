@@ -1,0 +1,3 @@
+[submodule "scaffolding"]
+	path = scaffolding
+	url = https://github.com/franeklubi/scaffolding.git
