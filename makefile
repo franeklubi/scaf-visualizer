@@ -1,4 +1,6 @@
 
+program=./test.scaf
+
 main: main.c
 	gcc -lncurses *.c \
 		./scaffolding/fileHandling.c \
@@ -9,5 +11,4 @@ main: main.c
 
 run:
 	make
-	./a.out
-
+	./a.out ${program}
