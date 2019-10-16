@@ -1,5 +1,7 @@
 #include <ncurses.h>
 #include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
 
 #include "./scaffolding/fileHandling.h"
 #include "./scaffolding/Head.h"
@@ -8,8 +10,26 @@
 #include "./scaffolding/Lines.h"
 
 
-void drawLines() {
+void drawLines(ProgramState* state) {
+    for ( uint32_t x = 0; x < state->buffer_ptr->no_lines; x++ ) {
+        mvprintw(
+            x, 0,
+            "[%x](%x):\t\"",
+            x, state->buffer_ptr->lines_len[x]
+        );
 
+        for ( uint32_t i = 0; i < state->buffer_ptr->lines_len[x]; i++ ) {
+            printw(
+                "%c",
+                state->buffer_ptr->lines[x][i]
+            );
+        }
+        printw("\"");
+
+        // mvchgat(0, x, 1, A_REVERSE, 0, NULL);
+        // mvchgat(0, 7, 1, A_REVERSE, 0, NULL);
+    }
+    refresh();
 }
 
 
@@ -36,8 +56,13 @@ int run(char* filename) {
 
     while ( !should_end ) {
         should_end = execute(&state);
-        drawLines();
-        getch();
+        drawLines(&state);
+        char c = getch();
+        if ( c == 'q' ) {
+            return 0;
+        }
+
+        state.r_head_ptr->pos_x++;
     }
 
     return 0;
@@ -47,11 +72,11 @@ int run(char* filename) {
 int main() {
     initscr();
 
-    refresh();
+    noecho();
 
-    // run("./test.scaf");
+    curs_set(false);
 
-    getch();
+    run("./test.scaf");
 
     endwin();
 
