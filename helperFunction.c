@@ -1,6 +1,33 @@
 #include "helperFunctions.h"
 
 
+void drawStats(ProgramState* state) {
+    char opcode = state->buffer_ptr->lines
+        [state->r_head_ptr->pos_y][state->r_head_ptr->pos_x];
+
+    char curr_head = 'R';
+    if ( state->curr_head_ptr == state->w_head_ptr ) {
+        curr_head = 'W';
+    }
+
+    uint16_t y_pos = LINES-1;
+
+    mvprintw(
+        y_pos, 1,
+        "curr_head: %c\topcode: %c",
+        curr_head, opcode
+    );
+
+    for ( uint16_t x = 0; x < COLS; x++ ) {
+        mvchgat(
+            y_pos, x,
+            1, A_REVERSE, 0, NULL
+        );
+    }
+
+}
+
+
 void drawHead(Head* head, uint32_t x_mod, uint8_t colour) {
     mvchgat(
         head->pos_y, head->pos_x+x_mod,
@@ -20,8 +47,7 @@ void drawLines(WINDOW* win, ProgramState* state) {
         );
 
         // getting current cursor position for head drawing mod
-        int cur_y, cur_x;
-        getyx(win, cur_y, cur_x);
+        int cur_x = getcurx(win);
 
         for ( uint32_t x = 0; x < state->buffer_ptr->lines_len[y]; x++ ) {
             printw(
@@ -39,6 +65,7 @@ void drawLines(WINDOW* win, ProgramState* state) {
         }
     }
 
+    drawStats(state);
 
     refresh();
 }

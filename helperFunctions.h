@@ -16,6 +16,9 @@
 #define RED     2
 
 
+// drawStats draws stats of state at the bottom of the screen
+void drawStats(ProgramState* state);
+
 // drawHead highlights head's location
 void drawHead(Head* head, uint32_t x_mod, uint8_t colour);
 
