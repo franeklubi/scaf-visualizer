@@ -10,12 +10,14 @@ void drawStats(ProgramState* state) {
         curr_head = 'W';
     }
 
+    uint8_t curr_mod = state->curr_head_ptr->mod;
+
     uint16_t y_pos = LINES-1;
 
     mvprintw(
         y_pos, 1,
-        "curr_head: %c\topcode: %c",
-        curr_head, opcode
+        "curr_head: %c | %c_mod: %i | opcode: %c",
+        curr_head, curr_head, curr_mod, opcode
     );
 
     for ( uint16_t x = 0; x < COLS; x++ ) {
