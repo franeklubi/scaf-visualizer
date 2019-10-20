@@ -2,7 +2,7 @@
 program=./test.scaf
 
 main: main.c
-	gcc -Wall -lncurses *.c \
+	gcc -Wall -Wextra -lncurses *.c \
 		./scaffolding/fileHandling.c \
 		./scaffolding/Head.c \
 		./scaffolding/helperFunctions.c \
@@ -10,7 +10,7 @@ main: main.c
 		./scaffolding/Lines.c
 
 prod:
-	gcc -Wall -Wextra -lncurses -O3 *.c \
+	gcc -Wall -lncurses -O3 *.c \
 		./scaffolding/fileHandling.c \
 		./scaffolding/Head.c \
 		./scaffolding/helperFunctions.c \
